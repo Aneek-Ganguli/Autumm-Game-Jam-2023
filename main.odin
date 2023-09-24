@@ -29,8 +29,25 @@ Entity::struct{
 	//source : SDL.Rect,
 }
 
-playerUpdate :: proc(player:^Entity){
-	player.destionation.x += 1
+playerUpdate :: proc(player:^Entity,event:^SDL.Event){
+	if SDL.EventType.KEYDOWN == event.type{
+		if(event.key.keysym.scancode == SDL.SCANCODE_D){
+			player.destionation.x += 10
+		}
+		
+		if(event.key.keysym.scancode == SDL.SCANCODE_A){
+			player.destionation.x -= 10
+		}
+
+		if(event.key.keysym.scancode == SDL.SCANCODE_W){
+
+			player.destionation.y -= 10 
+		}
+
+		if(event.key.keysym.scancode == SDL.SCANCODE_S){
+			player.destionation.y += 10
+		}	
+	}
 }
 
 main :: proc() {
@@ -56,11 +73,13 @@ main :: proc() {
 			if(event.type==SDL.EventType.QUIT){
 				gameRunning=false;
 			}
+
+			playerUpdate(&nope,&event)
 		}
 	
 		SDL.RenderClear(window.renderer)
 
-		playerUpdate(&nope)
+	//	playerUpdate(&nope,&event)
 		
 		SDL.RenderCopy(window.renderer, nope.texture,nope.source, nope.destionation)//nope.source,nope.destionation)
 		//SDL.RenderCopy(window.renderer,text,nil,nil)
