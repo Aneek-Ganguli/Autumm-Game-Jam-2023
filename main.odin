@@ -22,6 +22,17 @@ renderWindow :: proc(p_title:cstring , p_w:i32, p_h:i32)->RenderWindow{
 	return window
 }
 
+Entity::struct{
+	texture:^SDL.Texture,
+	source : ^SDL.Rect,
+	destionation : ^SDL.Rect,
+	//source : SDL.Rect,
+}
+
+playerUpdate :: proc(player:^Entity){
+	player.destionation.x += 1
+}
+
 main :: proc() {
 	fmt.println("sups")
 	if SDL.Init(SDL.INIT_VIDEO)> 0{
@@ -31,9 +42,14 @@ main :: proc() {
 	assert(SDL_Image.Init(SDL_Image.INIT_PNG) != nil, SDL.GetErrorString())
 	window:= renderWindow("S",0,0)
 	text:= SDL_Image.LoadTexture(window.renderer,"j.png")
-
+	textRect:= SDL.Rect{10,10,10,10}	
 	event:SDL.Event
 	gameRunning:bool = true
+
+	
+
+	nope : Entity = {text,&SDL.Rect{0,0,32,32},&SDL.Rect{32*3,32*3,32*3,32*3}}
+	fmt.println(nope.destionation)
 
 	for gameRunning{
 		for SDL.PollEvent(&event){
@@ -41,10 +57,13 @@ main :: proc() {
 				gameRunning=false;
 			}
 		}
-
+	
 		SDL.RenderClear(window.renderer)
+
+		playerUpdate(&nope)
 		
-		SDL.RenderCopy(window.renderer, text, nil,nil)
+		SDL.RenderCopy(window.renderer, nope.texture,nope.source, nope.destionation)//nope.source,nope.destionation)
+		//SDL.RenderCopy(window.renderer,text,nil,nil)
 
 		SDL.RenderPresent(window.renderer)
 
